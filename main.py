@@ -3,9 +3,8 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 from ui_form import Ui_Widget
 import mysql.connector
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 from interface import get_user_input, update_result_label
+from machine_learning import train_and_predict
 
 class YourMainWindow(QMainWindow):
     def __init__(self):
@@ -29,19 +28,8 @@ class YourMainWindow(QMainWindow):
 
             data_ml_table = pd.read_sql_query('SELECT * FROM ml_table_all_random', connection)
 
-            X = data_ml_table[
-                ['1', '2', '3', '4', '5', '6', '1.2', '2.2', '3.2', '4.2', '1.3', '2.3', '3.3']]
-            y = data_ml_table['risk']
+            prediction, total_sum, y_test, y_pred = train_and_predict(data_ml_table, data, user_input)
 
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-            model = RandomForestClassifier()
-            model.fit(X_train, y_train)
-
-            y_pred = model.predict(X_test)
-
-            prediction = model.predict(data)[0]
-            total_sum = sum(user_input)
             if 13 <= total_sum <= 20:
                 risk_level = "Низкий"
             elif 21 <= total_sum <= 28:
