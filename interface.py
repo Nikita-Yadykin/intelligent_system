@@ -89,12 +89,24 @@ def get_user_input(ui):
 
     return user_input
 
-def update_result_label(ui, prediction, total_sum, risk_level, y_test, y_pred):
+def update_result_label(ui, prediction, total_sum, y_test, y_pred):
     try:
-        result_text = (f"Предсказанное значение столбца risk: {prediction}\n"
-                       f"\nСумма всех цифр: {total_sum} {risk_level}\n"
-                       f"\nОтчет о классификации:\n{classification_report(y_test, y_pred)}\n"
-                       f"Матрица ошибок:\n{str(confusion_matrix(y_test, y_pred))}")
+        # if 13 <= total_sum <= 20:
+        #     risk_level = "Низкий"
+        # elif 21 <= total_sum <= 28:
+        #     risk_level = "Средний"
+        # elif 29 <= total_sum <= 36:
+        #     risk_level = "Высокий"
+        # elif 37 <= total_sum <= 43:
+        #     risk_level = "Критический"
+        # else:
+        #     risk_level = "Проверьте правильность ввода"
+
+        # result_text = (f"Уровень риска: {prediction}\n"
+        #                f"\nСумма всех цифр: {total_sum} {risk_level}\n"
+        #                f"\nОтчет о классификации:\n{classification_report(y_test, y_pred)}\n"
+        #                f"Матрица ошибок:\n{str(confusion_matrix(y_test, y_pred))}")
+        result_text = f"Уровень риска: {prediction}\n"
         ui.label_70.setText(result_text)
     except Exception as e:
         ui.label_70.setText(f"Ошибка: {e}")

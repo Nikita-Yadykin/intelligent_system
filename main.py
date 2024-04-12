@@ -22,18 +22,7 @@ class YourMainWindow(QMainWindow):
             # Предсказание и анализ риска
             prediction, total_sum, y_test, y_pred = train_and_predict(data_ml_table, data, user_input)
 
-            if 13 <= total_sum <= 20:
-                risk_level = "Низкий"
-            elif 21 <= total_sum <= 28:
-                risk_level = "Средний"
-            elif 29 <= total_sum <= 36:
-                risk_level = "Высокий"
-            elif 37 <= total_sum <= 43:
-                risk_level = "Критический"
-            else:
-                risk_level = "Проверьте правильность ввода"
-
-            update_result_label(self.ui, prediction, total_sum, risk_level, y_test, y_pred)
+            update_result_label(self.ui, prediction, total_sum, y_test, y_pred)
 
         except Exception as e:
             self.ui.label_70.setText(f"Ошибка: {e}")
