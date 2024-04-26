@@ -1,7 +1,11 @@
 # interface.py
+# pyside6-uic form.ui -o ui_form.py
 from sklearn.metrics import classification_report, confusion_matrix
 
+# Определение функции get_user_input, которая получает ввод пользователя
+# и кодирует его в массив значений
 def get_user_input(ui):
+    # Словарь для сопоставления флажков с их значениями
     checkbox_encodings = {
         "class_vulnerability": {
             ui.checkBox: 1,
@@ -70,26 +74,27 @@ def get_user_input(ui):
             ui.checkBox_40: 5,
         }
     }
-
+    # Создание пустого списка для хранения ввода пользователя
     user_input = []
 
-    # Iterate through checkbox groups
+    # Итерация по группам флажков
     for group_name, checkbox_map in checkbox_encodings.items():
-        max_value = 0
+        max_value = 0 # Инициализация переменной для максимального значения
 
-        # Iterate through checkboxes in the current group
+        # Итерация по флажкам в текущей группе
         for checkbox, value in checkbox_map.items():
-            if checkbox.isChecked():
-                max_value = max(max_value, value)  # Update for checked boxes
+            if checkbox.isChecked(): # Проверка, выбран ли флажок
+                max_value = max(max_value, value)  # Обновление максимального значения
 
-        # Special handling for the three groups
+        # Обработка особых случаев для некоторых групп
         if group_name in ["confidentiality_violation", "integrity_violation", "availability_violation"]:
-            user_input.append(max_value if max_value > 0 else 1)  # Append 1 if none checked
+            user_input.append(max_value if max_value > 0 else 1)   # Добавление максимального значения в список
         else:
-            user_input.append(max_value)  # Append 0 if none checked in other groups
+            user_input.append(max_value)  # Добавление максимального значения в список (0, если флажки не выбраны)
 
     return user_input
 
+# Определение функции update_result_label, которая обновляет метку с результатом
 def update_result_label(ui, prediction, total_sum, y_test, y_pred):
     try:
         # if 13 <= total_sum <= 20:
@@ -107,7 +112,11 @@ def update_result_label(ui, prediction, total_sum, y_test, y_pred):
         #                f"\nСумма всех цифр: {total_sum} {risk_level}\n"
         #                f"\nОтчет о классификации:\n{classification_report(y_test, y_pred)}\n"
         #                f"Матрица ошибок:\n{str(confusion_matrix(y_test, y_pred))}")
+        # Формирование строки с результатами
         result_text = f"Уровень риска: {prediction}\n"
+        # Установка текста метки с результатом
         ui.label_70.setText(result_text)
+        # Обработка исключений
     except Exception as e:
+        # Установка текста метки с сообщением об ошибке
         ui.label_70.setText(f"Ошибка: {e}")

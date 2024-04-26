@@ -29,13 +29,13 @@ def train_and_predict(data_ml_table, data, user_input):
     #model = GradientBoostingClassifier()
     model = LGBMClassifier()
 
-    # Perform cross-validation
+    # Выполнить крос-валидацию
     scores = cross_val_score(model, X, y, cv=5)  # 5-fold cross-validation
     print("Cross-Validation Scores:", scores)
     print("Mean Accuracy:", scores.mean())
     print("Standard Deviation of Accuracy:", scores.std())
 
-    # Plot learning curve
+    # Отобразиь кривые обучения
     train_sizes, train_scores, test_scores, fit_times, _ = learning_curve(
         model, X, y, cv=5, n_jobs=-1, train_sizes=np.linspace(.1, 1.0, 5), return_times=True)
 
@@ -64,13 +64,13 @@ def train_and_predict(data_ml_table, data, user_input):
     prediction = model.predict(data.values)[0]
     total_sum = sum(user_input)
 
-    # Calculate accuracy
+    # Рассчитать accuracy
     accuracy = accuracy_score(y_test, y_pred)
 
-    # Classification report
+    # Отчет о классификации
     report = classification_report(y_test, y_pred, target_names=[reverse_risk_mapping[i] for i in range(len(reverse_risk_mapping))])
 
-    # Confusion matrix
+    # Матриа ошибок
     matrix = confusion_matrix(y_test, y_pred)
 
     # Ошибка обучения на тренировочных данных
@@ -113,3 +113,35 @@ def train_and_predict(data_ml_table, data, user_input):
 
     return prediction, total_sum, y_test, y_pred
 
+##############
+
+# Определение функции train_and_predict, которая обучает модель и делает предсказание
+def train_and_predict(data_ml_table, data, user_input):
+    # Преобразование целевой переменной 'risk' в числовой формат
+    risk_mapping = {'Низкий': 0, 'Средний': 1, 'Высокий': 2, 'Критический': 3}
+    reverse_risk_mapping = {v: k for k, v in risk_mapping.items()}  # Обратное отображение для имен классов
+    data_ml_table['risk'] = data_ml_table['risk'].map(risk_mapping)
+
+    # Выделение признаков и целевой переменной из данных
+    X = data_ml_table[['1', '2', '3', '4', '5', '6', '1.2', '2.2', '3.2', '4.2', '1.3', '2.3', '3.3']]
+    y = data_ml_table['risk']
+
+    # Разделение данных на обучающий и тестовый наборы
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Выбор модели классификации
+    model = LGBMClassifier()
+
+    # Обучение модели
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    prediction = model.predict(data.values)[0]
+    total_sum = sum(user_input)
+
+    # Отчет о классификации
+    report = classification_report(y_test, y_pred, target_names=[reverse_risk_mapping[i] for i in range(len(reverse_risk_mapping))])
+
+    # Предсказание и возврат результата
+    prediction = reverse_risk_mapping[model.predict(data.values)[0]]
+
+    return prediction, total_sum, y_test, y_pred
