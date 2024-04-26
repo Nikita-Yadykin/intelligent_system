@@ -22,7 +22,7 @@ def prepare_data(ui):
     )
 
     # Выполнение запроса к базе данных и чтение данных в DataFrame
-    data_ml_table = pd.read_sql_query('SELECT * FROM ml_table_all_random', connection)
+    data_ml_table = pd.read_sql_query('SELECT * FROM Table_ML', connection)
 
     # Возврат подготовленных данных и данных из базы данных
     return data, data_ml_table
