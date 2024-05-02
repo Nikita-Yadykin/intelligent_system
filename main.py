@@ -34,11 +34,11 @@ class YourMainWindow(QMainWindow):
             # Получение ввода пользователя
             user_input = get_user_input(self.ui)
 
-            # Проведение обучения и предсказания с использованием машинного обучения
+                # Проведение обучения и предсказания с использованием машинного обучения
             prediction, total_sum, y_test, y_pred = train_and_predict(data_ml_table, data, user_input)
 
             # Обновление меток результатов на графическом интерфейсе
-            update_result_label(self.ui, prediction, total_sum, y_test, y_pred)
+            update_result_label(self.ui, prediction, total_sum, y_test, y_pred, user_input)
 
         except Exception as e:
             # Вывод сообщения об ошибке на графический интерфейс
